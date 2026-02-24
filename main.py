@@ -9,4 +9,4 @@ async def hello():
 
 
 if "__main__" == __name__:
-    uvicorn.run(app, host="0.0.0.0", port="8000")
+    uvicorn.run(app, host="0.0.0.0", port=5000)
