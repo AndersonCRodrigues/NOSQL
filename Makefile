@@ -1,5 +1,5 @@
 dev:
- uvicorn main:app --reload --port 5000
+ uvicorn app.main:app --reload --port 5000
 
 run:
- python main.py
+ python -m app.main.py
