@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from .routes import route
+from .routes import router
 
 app = FastAPI(
     title="Backend Aula",
@@ -11,7 +11,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-app.include_router(route)
+app.include_router(router)
 
 @app.get("/")
 async def healthcheck():
