@@ -4,8 +4,8 @@ import uvicorn
 app = FastAPI()
 
 @app.get("/")
-async def hello():
-    return {"message":"Hello, World!"}
+async def healthcheck():
+    return {"status":"Ok"}
 
 
 if "__main__" == __name__:
