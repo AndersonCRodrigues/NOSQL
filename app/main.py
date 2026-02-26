@@ -5,7 +5,7 @@ from .routes import router
 
 app = FastAPI(
     title="Backend Aula",
-    description="Backend para aula da Vassouras",
+    description="Backend para aula da Vassouras 5° período.",
     version="1.0",
     docs_url="/docs",
     redoc_url="/redoc",
