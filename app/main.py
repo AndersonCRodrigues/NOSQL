@@ -1,6 +1,15 @@
-from fastapi import FastAPI
 import uvicorn
+from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.base import BaseHTTPMiddleware
 
+from .error_handlers import (
+    http_exception_handler,
+    unhandled_exception_handler,
+    validation_exception_handler,
+)
+from .middleware import logging_middleware
 from .routes import router
 
 app = FastAPI(
@@ -11,11 +20,18 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+app.add_middleware(BaseHTTPMiddleware, dispatch=logging_middleware)
+
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, unhandled_exception_handler)
+
 app.include_router(router, prefix="/api/v1")
+
 
 @app.get("/health")
 async def healthcheck():
-    return {"status":"Ok"}
+    return {"status": "Ok"}
 
 
 if "__main__" == __name__:
