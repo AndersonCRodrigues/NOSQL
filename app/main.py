@@ -9,7 +9,6 @@ app = FastAPI(
     version="1.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    root_path="/api/v1",
 )
 
 app.include_router(router, prefix="/api/v1")
