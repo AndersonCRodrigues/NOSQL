@@ -10,6 +10,7 @@ from .error_handlers import (
     unhandled_exception_handler,
     validation_exception_handler,
 )
+from .config import settings
 from .middleware import logging_middleware
 from .routes import router
 
@@ -21,9 +22,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+origins = ["*"] if settings.ENV == "development" else settings.ALLOWED_ORIGINS.split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
