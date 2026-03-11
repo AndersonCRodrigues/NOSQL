@@ -1,4 +1,3 @@
-import uuid
 from typing import List, Optional
 
 from ..repositories.base import AbstractTaskRepository
@@ -17,12 +16,7 @@ class TaskService:
         return self.repo.get_by_id(task_id)
 
     def create(self, data: TaskCreate) -> TaskResponse:
-        task = TaskResponse(
-            id=str(uuid.uuid4()),
-            title=data.title,
-            completed=data.completed,
-        )
-        return self.repo.insert(task)
+        return self.repo.insert(data)
 
     def update(self, task_id: str, data: TaskUpdate) -> Optional[TaskResponse]:
         task = self.repo.get_by_id(task_id)
