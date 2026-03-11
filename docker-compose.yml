@@ -9,8 +9,19 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./data:/data/db
       - mongo_data:/data/db
+
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    volumes:
+      - ./app:/app/app
 
 volumes:
   mongo_data:
