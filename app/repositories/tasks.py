@@ -2,7 +2,7 @@ from typing import List, Optional
 from bson import ObjectId
 from ..schemas.tasks import TaskResponse, TaskCreate
 from .base import AbstractTaskRepository
-from ..database import database
+from ..database.database import database
 
 
 class MongoTaskRepository(AbstractTaskRepository):
