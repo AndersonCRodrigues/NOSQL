@@ -16,8 +16,8 @@ services:
     container_name: backend
     ports:
       - 5000:5000
-    env_file:
-      - .env
+    environment:
+      DATABASE_URL: mongodb://root:password@mongo:27017/
     depends_on:
       - mongo
     volumes:
