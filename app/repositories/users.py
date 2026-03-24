@@ -40,9 +40,9 @@ class MongoUserRepository(AbstractTaskRepository):
 
         return UsersResponse(
             id=str(result.inserted_id),
-            name=set.name,
-            email=set.email,
-            idade=set.idade,
+            name=user.name,
+            email=user.email,
+            idade=user.idade,
         )
 
     def update(self, user: UsersResponse) -> UsersResponse:
