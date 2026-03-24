@@ -1,3 +1,4 @@
+from pymongo import ASCENDING
 from typing import List, Optional
 from bson import ObjectId
 from ..schemas.users import UserCreate, UsersResponse
@@ -8,6 +9,10 @@ from ..database.database import database
 class MongoUserRepository(AbstractTaskRepository):
     def __init__(self):
         self.collection = database.db["users"]
+        self.collection.create_index(
+            [("email", ASCENDING)],
+            unique=True
+        )
 
     def get_all(self) -> List[UsersResponse]:
         users = []
