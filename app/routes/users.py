@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pymongo.errors import DuplicateKeyError
 
 from ..core.dependencies import get_user_service
 from ..schemas.users import UserCreate, UsersResponse, UsersUpdate
@@ -22,7 +23,13 @@ async def get_user(user_id: str, service: UsersService = Depends(get_user_servic
 
 @router.post("/", response_model=UsersResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(data: UserCreate, service: UsersService = Depends(get_user_service)):
-    return service.create(data)
+    try: 
+        return service.create(data)
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Email já cadastrado",
+        )
 
 
 @router.put("/{user_id}", response_model=UsersResponse)
