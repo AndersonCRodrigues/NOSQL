@@ -10,12 +10,12 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/", response_model=list[UsersResponse])
 async def list_users(service: UsersService = Depends(get_user_service)):
-    return service.get_all()
+    return await service.get_all()
 
 
 @router.get("/{user_id}", response_model=UsersResponse)
 async def get_user(user_id: str, service: UsersService = Depends(get_user_service)):
-    user = service.get_by_id(user_id)
+    user = await service.get_by_id(user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrada")
     return user
@@ -24,7 +24,7 @@ async def get_user(user_id: str, service: UsersService = Depends(get_user_servic
 @router.post("/", response_model=UsersResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(data: UserCreate, service: UsersService = Depends(get_user_service)):
     try: 
-        return service.create(data)
+        return await service.create(data)
     except DuplicateKeyError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
@@ -34,7 +34,7 @@ async def create_user(data: UserCreate, service: UsersService = Depends(get_user
 
 @router.put("/{user_id}", response_model=UsersResponse)
 async def update_user(user_id: str, data: UsersUpdate, service: UsersService = Depends(get_user_service)):
-    user = service.update(user_id, data)
+    user = await service.update(user_id, data)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrada")
     return user
@@ -42,6 +42,6 @@ async def update_user(user_id: str, data: UsersUpdate, service: UsersService = D
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: str, service: UsersService = Depends(get_user_service)):
-    deleted = service.delete(user_id)
+    deleted = await service.delete(user_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User não encontrada")
