@@ -2,21 +2,22 @@ from pymongo import ASCENDING
 from typing import List, Optional
 from bson import ObjectId
 from ..schemas.users import UserCreate, UsersResponse
-from .base import AbstractTaskRepository
-from ..database.database import database
-
+from .base import AbstractTaskRepository # Note: Talvez queira renomear para AbstractUserRepository?
+from ..database.database import databaseAsync as database
 
 class MongoUserRepository(AbstractTaskRepository):
     def __init__(self):
         self.collection = database.db["users"]
-        self.collection.create_index(
+
+    async def create_indexes(self):
+        await self.collection.create_index(
             [("email", ASCENDING)],
             unique=True
         )
 
-    def get_all(self) -> List[UsersResponse]:
+    async def get_all(self) -> List[UsersResponse]:
         users = []
-        for doc in self.collection.find():
+        async for doc in self.collection.find():
             users.append(
                 UsersResponse(
                     id=str(doc["_id"]),
@@ -27,8 +28,8 @@ class MongoUserRepository(AbstractTaskRepository):
             )
         return users
 
-    def get_by_id(self, user_id: str) -> Optional[UsersResponse]:
-        doc = self.collection.find_one({"_id": ObjectId(user_id)})
+    async def get_by_id(self, user_id: str) -> Optional[UsersResponse]:
+        doc = await self.collection.find_one({"_id": ObjectId(user_id)})
 
         if not doc:
             return None
@@ -40,8 +41,9 @@ class MongoUserRepository(AbstractTaskRepository):
             idade=doc["idade"],
         )
 
-    def insert(self, user: UserCreate) -> UsersResponse:
-        result = self.collection.insert_one(user.model_dump())
+    async def insert(self, user: UserCreate) -> UsersResponse:
+        # await necessário e inserted_id funciona igual ao PyMongo
+        result = await self.collection.insert_one(user.model_dump())
 
         return UsersResponse(
             id=str(result.inserted_id),
@@ -50,13 +52,13 @@ class MongoUserRepository(AbstractTaskRepository):
             idade=user.idade,
         )
 
-    def update(self, user: UsersResponse) -> UsersResponse:
-        self.collection.update_one(
+    async def update(self, user: UsersResponse) -> UsersResponse:
+        await self.collection.update_one(
             {"_id": ObjectId(user.id)},
             {"$set": user.model_dump(exclude={"id"})}
         )
         return user
 
-    def delete(self, user_id: str) -> bool:
-        result = self.collection.delete_one({"_id": ObjectId(user_id)})
+    async def delete(self, user_id: str) -> bool:
+        result = await self.collection.delete_one({"_id": ObjectId(user_id)})
         return result.deleted_count > 0
