@@ -37,7 +37,7 @@ def get_task(task_id: int):
     for task in todo_list:
         if task.id == task_id:
             return task
-    raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarefa não encontrada")
 
 @app.put("/tasks/{task_id}", response_model=Task)
 def update_task(task_id: int, updated_task_in: TaskCreate):
@@ -47,7 +47,7 @@ def update_task(task_id: int, updated_task_in: TaskCreate):
             updated_task = Task(id=task_id, **task_data)
             todo_list[index] = updated_task
             return updated_task
-    raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarefa não encontrada")
 
 @app.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id: int):
@@ -55,7 +55,7 @@ def delete_task(task_id: int):
         if task.id == task_id:
             todo_list.pop(index)
             return
-    raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarefa não encontrada")
 
 
 if __name__ == "__main__":
