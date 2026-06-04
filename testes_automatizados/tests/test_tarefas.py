@@ -1,16 +1,8 @@
-import pytest
 from fastapi.testclient import TestClient
 from fastapi import status
 import main 
 
 client = TestClient(main.app)
-
-@pytest.fixture(autouse=True)
-def reset_todo_list():
-    main.todo_list.clear()
-    main.id_counter = 1
-    yield
-
 
 def test_create_task_success():
     payload = {"title": "Estudar Pytest", "description": "Ler documentação", "completed": False}
